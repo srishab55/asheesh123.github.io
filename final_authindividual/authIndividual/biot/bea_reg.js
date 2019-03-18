@@ -1,0 +1,70 @@
+
+
+function doNext(user) {
+  var messageRef=firebase.database().ref('biotech');
+
+  document.getElementById('biot').addEventListener('submit',submitForm);
+  var total_fee=0;
+  fetchData(user);
+  function submitForm(e){
+
+      e.preventDefault();
+      // var username=document.getElementById("username").value;
+      var foren=document.getElementById("cbx1").checked;
+      var foren_fee=50;
+      var lumi=document.getElementById("cbx2").checked;
+      var lumi_fee=0;
+      var garden=document.getElementById("cbx3").checked;
+      var garden_fee=0;
+      total_fee+=return_true(lumi,lumi_fee)+return_true(foren,foren_fee)+return_true(garden,garden_fee)
+      writeUserData(user,foren,lumi,garden,total_fee);
+  }
+}
+
+function writeUserData(user,foren,lumi,garden,total_fee) {
+  firebase.database().ref('biotech').child(user.uid+"").set({
+      username: user.email,
+      FORENSICS:foren,
+      LUMIERE:lumi,
+      GARDEN_SCAVENGERS:garden,
+      paid: 0,
+      totalfee:total_fee
+  }, function(error) {
+    if(error) {
+      window.alert('error occured!');
+    } else {
+      window.alert('successful!');
+      if(total_fee==0){
+          window.alert("Registered Successfully");
+      }
+      else{
+          window.alert("Registered Successfully\nYou have to pay total of Rs. "+total_fee);
+      }
+      window.location.href='../../../index.html';
+    }
+  });
+
+}
+function return_true(flag,value)
+{
+            if(flag) return value;
+            else return 0;
+}
+
+function fetchData(user){
+      var leadsRef = firebase.database().ref('biotech/'+user.uid);
+      var flag=true;
+      leadsRef.on('value', function(snapshot) {
+                var child = snapshot.val();
+                if(child==null &&flag) {
+                  flag=false;
+
+                }
+                else if(flag){
+                  flag=false;
+                  document.getElementById("cbx1").checked=child.FORENSICS;
+                  document.getElementById("cbx2").checked=child.LUMIERE;
+                  document.getElementById("cbx3").checked=child.GARDEN_SCAVENGERS;
+                }
+        });
+}
