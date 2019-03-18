@@ -37,7 +37,6 @@ function writeUserData(user,talk,show,the,ext,talkm,total_fee) {
             if(error) {
               window.alert('error occured!');
             } else {
-              window.alert('successful!');
               if(total_fee==0){
                   window.alert("Registered Successfully");
               }
